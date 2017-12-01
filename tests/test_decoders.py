@@ -165,7 +165,17 @@ def test_elm_voltage():
     # these aren't parsed as standard hex messages, so manufacture our own
     assert d.elm_voltage([ Message([ Frame("12.875") ]) ]) == (12.875, Unit.VOLT)
     assert d.elm_voltage([ Message([ Frame("12") ]) ]) == (12, Unit.VOLT)
-    assert d.elm_voltage([ Message([ Frame("12ABCD") ]) ]) == (None, Unit.NONE)
+    assert d.elm_voltage([ Message([ Frame("12ABCD") ]) ]) == (12, Unit.VOLT)
+
+def test_fuel_type():
+    assert d.fuel_type(m("00")) == ("Not available", Unit.NONE)
+    assert d.fuel_type(m("17")) == ("Bifuel running diesel", Unit.NONE)
+    assert d.fuel_type(m("18")) == (None, Unit.NONE)
+
+def test_obd_compliance():
+    assert d.obd_compliance(m("00")) == ("Undefined", Unit.NONE)
+    assert d.obd_compliance(m("21")) == ("Heavy Duty Euro OBD Stage VI (HD EOBD-IV)", Unit.NONE)
+    assert d.obd_compliance(m("22")) == (None, Unit.NONE)
 
 def test_dtc():
     assert d.dtc(m("0104")) == ([
